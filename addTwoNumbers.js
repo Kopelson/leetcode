@@ -3,44 +3,73 @@ The digits are stored in reverse order, and each of their nodes contains a singl
 Add the two numbers and return the sum as a linked list.
 You may assume the two numbers do not contain any leading zero, except the number 0 itself. */
 
-/* Example 1:
-Input: l1 = [2,4,3], l2 = [5,6,4]
-Output: [7,0,8]
-Explanation: 342 + 465 = 807.
-Example 2:
+function addTwoNumbers(l1,l2){
+    //Initialize current node to dummy head of the returning list.
+    let dummyHead;
+    let currentNode = dummyHead;
+    //Initialize carry to 0.
+    let carry = 0;
+    //Initialize p and q to head of l1 and l2 respectively.
+    let p = l1;
+    let q = l2;
+    //Loop through lists l1 and l2 until you reach both ends.
+    while(p || q){
+        //Set x to node p's value. If p has reached the end of l1, set to 0.
+        let x = 0;
+        if(p.val){
+            x = p.val;
+        }
+        //Set y to node q's value. If q has reached the end of l2, set to 0.
+        let y = 0;
+        if(q.val){
+            y = q.val;
+        }
+        //Set sum = x + y + carry
+        let sum = x + y + carry;
+        //Update carry = sum / 10
+        carry = Math.floor(sum / 10);
+        //Create a new node with the digit value of (sum mod 10) and set it to current node's next, then advance current node to next.
+        let next = sum % 10;
+        let tempNode = new ListNode(next);
+        if(dummyHead == null){
+            dummyHead = new ListNode(next);
+            currentNode = dummyHead;
+        }else{
+            currentNode.next = tempNode;
+            currentNode = currentNode.next;
+        }
+        // Advance both p and q.
+        if(p.next != null){
+            p = p.next;
+        } else {
+            p = false
+        }
+        if(q.next != null){
+            q = q.next;
+        } else {
+            q = false;
+        }
+    }
+        //Check if carry > 0, if so append a new node with the carry to the returning list.
+        if (carry > 0){
+            let tempNode = new ListNode(carry);
+            currentNode.next = tempNode;
+        }
+        // Return dummy head's next node.
+        return dummyHead;
+}
 
-Input: l1 = [0], l2 = [0]
-Output: [0]
-Example 3:
-
-Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
-Output: [8,9,9,9,0,0,0,1] */
+// Personal notes
 
 /*
-Approach 1: Elementary Math
-Intuition
 
-Keep track of the carry using a variable and simulate digits-by-digits sum starting from the head of list, which contains the least-significant digit.
+What is a Linked List?
+"A linked list is an ordered collection of data elements. A data element can be represented as a node in a linked list. Each node consists of two parts: data & pointer to the next node.
+Unlike arrays, data elements are not stored at contiguous locations. The data elements or nodes are linked using pointers, hence called a linked list." -https://codeburst.io/linked-lists-in-javascript-es6-code-part-1-6dd349c3dcc3
 
-Algorithm
+Time Complexity:
+O(n+m)
 
-Just like how you would sum two numbers on a piece of paper, we begin by summing the least-significant digits, which is the head of l1l1 and l2l2. Since each digit is in the range of 0 \ldots 90…9, summing two digits may "overflow". For example 5 + 7 = 125+7=12. In this case, we set the current digit to 22 and bring over the carry = 1carry=1 to the next iteration.
- carry must be either 0 or 1 because the largest possible sum of two digits (including the carry) is 9 + 9 + 1 = 19+9+1=19.
+
 */
 
-/*
-The pseudocode is as following:
-
-Initialize current node to dummy head of the returning list.
-Initialize carry to 00.
-Initialize pp and qq to head of l1l1 and l2l2 respectively.
-Loop through lists l1l1 and l2l2 until you reach both ends.
-Set xx to node pp's value. If pp has reached the end of l1l1, set to 00.
-Set yy to node qq's value. If qq has reached the end of l2l2, set to 00.
-Set sum = x + y + carrysum=x+y+carry.
-Update carry = sum / 10carry=sum/10.
-Create a new node with the digit value of (sum \bmod 10)(summod10) and set it to current node's next, then advance current node to next.
-Advance both pp and qq.
-Check if carry = 1carry=1, if so append a new node with digit 11 to the returning list.
-Return dummy head's next node.
-*/
